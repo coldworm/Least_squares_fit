@@ -6,7 +6,7 @@
 ![](https://latex.codecogs.com/svg.latex?S%20=%20\sum_{i=1}^{n}[\sqrt{(x_i-x_0)^2+(y_i-y_0)^2}-r]^2)  
 为避免平方根，优化目标函数如下：  
 ![](https://latex.codecogs.com/svg.latex?E%20=%20\sum_{i=1}^{n}[(x_i-x_0)^2+(y_i-y_0)^2-r^2]^2%20\quad\quad\quad\quad(2))  
-![](https://latex.codecogs.com/svg.latex?E%20=%20\sum_{i=1}^{n}(x_i^2-2x_0x_i+x_i^2+y_i^2-2y_0y_i+y_0^2)^2%20\quad(3))  
+![](https://latex.codecogs.com/svg.latex?E%20=%20\sum_{i=1}^{n}(x_i^2-2x_0x_i+x_0^2+y_i^2-2y_0y_i+y_0^2)^2%20\quad(3))  
 令 ![](https://latex.codecogs.com/svg.latex?A=-2x_0)，![](https://latex.codecogs.com/svg.latex?B=-2y_0)，![](https://latex.codecogs.com/svg.latex?C=x_0^2+y_0^2-r^2)  
 ![](https://latex.codecogs.com/svg.latex?E%20=%20\sum_{i=1}^{n}(x_i^2+y_i^2+Ax_i+By_i+C)^2)  
 由最小二乘法原理，参数A、B、C应使得E取极小值。根据极小值的求法，A、B和C应满足：  
