@@ -2,12 +2,20 @@ from tkinter import *
 from tkinter import filedialog
 import numpy as np
 
-# example x + 2*y + 3*z = k
+# example1 x_1 + 2*x_2 + 3*x_3 = y
 # raw data in csv file:
 # 1,2,3,14
 # 1,1,2,9
 # 2,1,4,16
 # result: [1. 2. 3.]
+
+# example2 c + x_1 + 2*x_2 + 3*x_3 = y
+# raw data in csv file:
+# 1,2,3,15
+# 1,1,2,10
+# 2,1,4,17
+# 3,2,2,14
+# result: [1. 1. 2. 3.]
 
 
 def load_data(filename):
@@ -20,15 +28,40 @@ def load_data(filename):
     return data
 
 
-def raw_data_to_normal_equation(x, y):
-    x_n = np.empty(shape=(0, x.shape[1]))
-    y_n = []
-    for i in range(x.shape[1]):
-        tmp = []
-        for j in range(x.shape[1]):
-            tmp.append(np.sum(x[:, i] * x[:, j]))
-        x_n = np.r_[x_n, [tmp]]
-        y_n.append(np.sum(x[:, i] * y))
+# x: x vector values
+# y: y values
+# c: const item flag
+def raw_data_to_normal_equation(x, y, c):
+    if not c:
+        x_n = np.empty(shape=(0, x.shape[1]))
+        y_n = []
+        for i in range(x.shape[1]):
+            tmp = []
+            for j in range(x.shape[1]):
+                tmp.append(np.sum(x[:, i] * x[:, j]))
+            x_n = np.r_[x_n, [tmp]]
+            y_n.append(np.sum(x[:, i] * y))
+    else:
+        x_n = np.empty(shape=(0, x.shape[1] + 1))
+        y_n = []
+        for i in range(x.shape[1]+1):
+            tmp = []
+            for j in range(x.shape[1]+1):
+                if i == 0:
+                    if j == 0:
+                        tmp.append(x.shape[0])
+                    else:
+                        tmp.append(np.sum(x[:, j-1]))
+                else:
+                    if j == 0:
+                        tmp.append(np.sum(x[:, i-1]))
+                    else:
+                        tmp.append(np.sum(x[:, i-1] * x[:, j-1]))
+            x_n = np.r_[x_n, [tmp]]
+            if i == 0:
+                y_n.append(np.sum(y))
+            else:
+                y_n.append(np.sum(x[:, i-1] * y))
     return x_n, y_n
 
 
@@ -44,9 +77,13 @@ class MyWindow:
         self.file_path = Entry(self.window, width=36, state=DISABLED)
         self.file_path.place(relx=.25, rely=.15, anchor="w")
 
+        self.const_item = BooleanVar()
+        Checkbutton(self.window, text="Constant item", variable=self.const_item, command=self.start_calculation,
+                    onvalue=True, offvalue=False).place(relx=.05, rely=.3, anchor="w")
+
         self.lab_info = StringVar()
         self.lab_info.set('Start')
-        Message(self.window, textvariable=self.lab_info, bg="white", width=450).place(relx=.05, rely=.25, anchor="nw")
+        Message(self.window, textvariable=self.lab_info, bg="white", width=450).place(relx=.05, rely=.4, anchor="nw")
 
         self.window.mainloop()
 
@@ -57,6 +94,10 @@ class MyWindow:
         self.file_path.insert(0, file_name)
         self.file_path.config(state=DISABLED)
 
+        self.start_calculation()
+
+    def start_calculation(self):
+        file_name = self.file_path.get()
         if len(file_name) == 0:
             return
 
@@ -65,7 +106,7 @@ class MyWindow:
         x = data[:, 0:-1]
         y = data[:, -1]
 
-        x_n, y_n = raw_data_to_normal_equation(x, y)
+        x_n, y_n = raw_data_to_normal_equation(x, y, self.const_item.get())
         # print(x_n)
         # print(y_n)
 
