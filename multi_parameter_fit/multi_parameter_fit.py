@@ -110,6 +110,11 @@ class MyWindow:
         # print(x_n)
         # print(y_n)
 
+        # Singular matrix check
+        if np.linalg.cond(x_n) > 1/sys.float_info.epsilon:
+            self.lab_info.set("Singular matrix, raw data may not sufficient!")
+            return
+
         res = np.linalg.solve(x_n, y_n)
         self.lab_info.set(res)
 
