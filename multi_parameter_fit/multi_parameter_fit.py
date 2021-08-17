@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 import numpy as np
+import sys
 
 # example1 x_1 + 2*x_2 + 3*x_3 = y
 # raw data in csv file:
